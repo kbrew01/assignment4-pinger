@@ -1,10 +1,11 @@
-from socket import *
+
 import os
 import sys
 import struct
 import time
 import select
 import binascii
+import socket
 
 # Should use stdev
 
@@ -162,4 +163,5 @@ def ping(host, timeout=1):
             print '{} packets transmitted, {} packets received, {:.1f}% packet loss'.format(cnt, rtt_cnt, 100.0 - rtt_cnt * 100.0 / cnt)
             if rtt_cnt != 0:
                 print 'round-trip min/avg/max {:.3f}/{:.3f}/{:.3f} ms'.format(rtt_min, rtt_sum / rtt_cnt, rtt_max)
+                
    ping("google.co.il")
