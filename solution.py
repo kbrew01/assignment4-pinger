@@ -5,7 +5,7 @@ import struct
 import time
 import select
 import binascii
-import socket
+
 # Should use stdev
 
 ICMP_ECHO_REQUEST = 8
@@ -144,14 +144,14 @@ def ping(host, timeout=1):
     cnt = 0
     # timeout=1 means: If one second goes by without a reply from the server,  	
     # the client assumes that either the client's ping or the server's pong is lost
-    dest = gethostbyname(host)
+    dest = socket.gethostbyname(host)
     print "Pinging " + dest + " using Python:"
     
     
     # Calculate vars values and return them
     #  vars = [str(round(packet_min, 2)), str(round(packet_avg, 2)), str(round(packet_max, 2)),str(round(stdev(stdev_var), 2))]
     # Send ping requests to a server separated by approximately one second
-   try:
+ try:
         while True:
             cnt += 1
             print doOnePing(dest, timeout)
@@ -162,5 +162,4 @@ def ping(host, timeout=1):
             print '{} packets transmitted, {} packets received, {:.1f}% packet loss'.format(cnt, rtt_cnt, 100.0 - rtt_cnt * 100.0 / cnt)
             if rtt_cnt != 0:
                 print 'round-trip min/avg/max {:.3f}/{:.3f}/{:.3f} ms'.format(rtt_min, rtt_sum / rtt_cnt, rtt_max)
-                
-    ping("google.co.il")
+   ping("google.co.il")
