@@ -8,6 +8,9 @@ import binascii
 # Should use stdev
 
 ICMP_ECHO_REQUEST = 8
+timeRTT = []
+packageSent = 0;
+packageRev = 0;
 
 
 def checksum(string):
@@ -51,27 +54,17 @@ def receiveOnePing(mySocket, ID, timeout, destAddr):
 
         # Fetch the ICMP header from the IP packet
         
-        type, code, checksum, id, seq = struct.unpack('bbHHh', recPacket[20:28])
-        if type != 0:
-            return 'expected type=0, but got {}'.format(type)
-        if code != 0:
-            return 'expected code=0, but got {}'.format(code)
-        if ID != id:
-            return 'expected id={}, but got {}'.format(ID, id)
-        send_time,  = struct.unpack('d', recPacket[28:])
-        
-        rtt = (timeReceived - send_time) * 1000
-        rtt_cnt += 1
-        rtt_sum += rtt
-        rtt_min = min(rtt_min, rtt)
-        rtt_max = max(rtt_max, rtt)
-
-        ip_header = struct.unpack('!BBHHHBBH4s4s' , recPacket[:20])
-        ttl = ip_header[5]
-        saddr = socket.inet_ntoa(ip_header[8])
-        length = len(recPacket) - 20
-
-        return '{} bytes from {}: icmp_seq={} ttl={} time={:.3f} ms'.format(length, saddr, seq, ttl, rtt)
+        icmpHeader = recPacket[20:28]
+            requestType, code, revChecksum, revId, revSequence =
+        struct.unpack('bbHHh',icmpHeader)
+              if ID == revId:
+                 bytesInDouble = struct.calcsize('d')
+                 timeData = struct.unpack('d',recPacket[28:28 + bytesInDouble])[0]
+                 timeRTT.append(timeReceived - timeData)
+                 packageRev += 1
+                 return timeReceived - timeData
+              else:
+                 return "ID is not the same!"           
 
         # Fill in end
         timeLeft = timeLeft - howLongInSelect
