@@ -122,11 +122,11 @@ def sendOnePing(mySocket, destAddr, ID):
     # which can be referenced by their position number within the object.
 
 def doOnePing(destAddr, timeout):
-    icmp = getprotobyname("icmp")
+    icmp = socket.getprotobyname("icmp")
 
 
     # SOCK_RAW is a powerful socket type. For more details:   http://sockraw.org/papers/sock_raw
-    mySocket = socket(AF_INET, SOCK_RAW, icmp)
+    mySocket = socket.socket(socket.AF_INET, sockt.SOCK_RAW, icmp)
 
     myID = os.getpid() & 0xFFFF  # Return the current process i
     sendOnePing(mySocket, destAddr, myID)
@@ -145,18 +145,22 @@ def ping(host, timeout=1):
     # timeout=1 means: If one second goes by without a reply from the server,  	
     # the client assumes that either the client's ping or the server's pong is lost
     dest = gethostbyname(host)
-    print("Pinging " + dest + " using Python:")
-    print("")
+    print "Pinging " + dest + " using Python:"
+    
     
     # Calculate vars values and return them
     #  vars = [str(round(packet_min, 2)), str(round(packet_avg, 2)), str(round(packet_max, 2)),str(round(stdev(stdev_var), 2))]
     # Send ping requests to a server separated by approximately one second
-    for i in range(0,4):
-        delay = doOnePing(dest, timeout)
-        print(delay)
-        time.sleep(1)  # one second
-
-    return vars
-
-if __name__ == '__main__':
+   try:
+        while True:
+            cnt += 1
+            print doOnePing(dest, timeout)
+            time.sleep(1)
+    except KeyboardInterrupt:
+        if cnt != 0:
+            print '--- {} ping statistics ---'.format(host)
+            print '{} packets transmitted, {} packets received, {:.1f}% packet loss'.format(cnt, rtt_cnt, 100.0 - rtt_cnt * 100.0 / cnt)
+            if rtt_cnt != 0:
+                print 'round-trip min/avg/max {:.3f}/{:.3f}/{:.3f} ms'.format(rtt_min, rtt_sum / rtt_cnt, rtt_max)
+                
     ping("google.co.il")
