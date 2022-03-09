@@ -78,9 +78,9 @@ def sendOnePing(mySocket, destAddr, ID):
 
    if sys.platform == 'darwin':
        # Convert 16-bit integers from host to network  byte order
-       myChecksum = socket.htons(myChecksum) & 0xffff
+       myChecksum = htons(myChecksum) & 0xffff
    else:
-       myChecksum = socket.htons(myChecksum)
+       myChecksum = htons(myChecksum)
 
 
    header = struct.pack("bbHHh", ICMP_ECHO_REQUEST, 0, myChecksum, ID, 1)
@@ -95,11 +95,11 @@ def sendOnePing(mySocket, destAddr, ID):
    # which can be referenced by their position number within the object.
 
 def doOnePing(destAddr, timeout):
-   icmp = socket.getprotobyname("icmp")
+   icmp = getprotobyname("icmp")
 
 
    # SOCK_RAW is a powerful socket type. For more details:   http://sockraw.org/papers/sock_raw
-   mySocket = socket.socket(socket.AF_INET, socket.SOCK_RAW, icmp)
+   mySocket = socket(AF_INET, SOCK_RAW, icmp)
 
    myID = os.getpid() & 0xFFFF  # Return the current process i
    sendOnePing(mySocket, destAddr, myID)
@@ -123,7 +123,7 @@ def ping(host, timeout=1):
        print(delay)
        time.sleep(1)  # one second
 
-   return vars
+   return delay
 
 if __name__ == '__main__':
    ping("google.co.il")
