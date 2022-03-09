@@ -48,10 +48,16 @@ def receiveOnePing(mySocket, ID, timeout, destAddr):
        recPacket, addr = mySocket.recvfrom(1024)
 
        # Fill in start
-
-       # Fetch the ICMP header from the IP packet
+      
+       icmphead = recPacket[20:28]
+       type, code, checksum, packetID, sequence = struct.unpack("bbHHh", icmphead)
+       if packetID == ID:
+          doubleBytes = struct.calcsize("d")
+          timeSent = struct.unpack("d", recPacket[28:28 + doubleBytes])[0]
+            return timeReceived - timeSent
 
        # Fill in end
+      
        timeLeft = timeLeft - howLongInSelect
        if timeLeft <= 0:
            return "Request timed out."
@@ -72,9 +78,9 @@ def sendOnePing(mySocket, destAddr, ID):
 
    if sys.platform == 'darwin':
        # Convert 16-bit integers from host to network  byte order
-       myChecksum = htons(myChecksum) & 0xffff
+       myChecksum = socket.htons(myChecksum) & 0xffff
    else:
-       myChecksum = htons(myChecksum)
+       myChecksum = socket.htons(myChecksum)
 
 
    header = struct.pack("bbHHh", ICMP_ECHO_REQUEST, 0, myChecksum, ID, 1)
@@ -89,11 +95,11 @@ def sendOnePing(mySocket, destAddr, ID):
    # which can be referenced by their position number within the object.
 
 def doOnePing(destAddr, timeout):
-   icmp = getprotobyname("icmp")
+   icmp = socket.getprotobyname("icmp")
 
 
    # SOCK_RAW is a powerful socket type. For more details:   http://sockraw.org/papers/sock_raw
-   mySocket = socket(AF_INET, SOCK_RAW, icmp)
+   mySocket = socket.socket(socket.AF_INET, socket.SOCK_RAW, icmp)
 
    myID = os.getpid() & 0xFFFF  # Return the current process i
    sendOnePing(mySocket, destAddr, myID)
@@ -104,7 +110,8 @@ def doOnePing(destAddr, timeout):
 
 def ping(host, timeout=1):
    
-    # timeout=1 means: If one second goes by without a reply from the server,      # the client assumes that either the client's ping or the server's pong is lost
+    # timeout=1 means: If one second goes by without a reply from the server,     
+      # the client assumes that either the client's ping or the server's pong is lost
    dest = gethostbyname(host)
    print("Pinging " + dest + " using Python:")
    print("")
