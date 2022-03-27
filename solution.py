@@ -79,9 +79,9 @@ def sendOnePing(mySocket, destAddr, ID):
 
     if sys.platform == 'darwin':
         # Convert 16-bit integers from host to network  byte order
-        myChecksum = socket.htons(myChecksum) & 0xffff
+        myChecksum = htons(myChecksum) & 0xffff
     else:
-        myChecksum = socket.htons(myChecksum)
+        myChecksum = htons(myChecksum)
 
     header = struct.pack("bbHHh", ICMP_ECHO_REQUEST, 0, myChecksum, ID, 1)
     packet = header + data
@@ -96,7 +96,7 @@ def doOnePing(destAddr, timeout):
     icmp = getprotobyname("icmp")
 
     # SOCK_RAW is a powerful socket type. For more details:   https://sock-raw.org/papers/sock_raw
-    mySocket = socket(socket.AF_INET, socket.SOCK_RAW, icmp)
+    mySocket = socket(AF_INET, SOCK_RAW, icmp)
 
     myID = os.getpid() & 0xFFFF  # Return the current process i
     sendOnePing(mySocket, destAddr, myID)
@@ -108,7 +108,7 @@ def doOnePing(destAddr, timeout):
 def ping(host, timeout=1):
     # timeout=1 means: If one second goes by without a reply from the server,
     # the client assumes that either the client's ping or the server's pong is lost
-    dest = socket.gethostbyname(host)
+    dest = gethostbyname(host)
     print("Pinging " + dest + " using Python:")
     print("")
 
