@@ -50,15 +50,19 @@ def receiveOnePing(mySocket, ID, timeout, destAddr):
 
         # Fill in start
         # Fetch the ICMP header from the IP packet
-        icmpMessage = recPacket[20:28]
-        type,code, checksum, identifier, sequence = struct.unpack('bbHHh', icmpMessage)
-        if ID == identifier:
-            #originate timestamp is located 28-36 bytes of echo reply message.
-            timeSent = struct.unpack('d', recPacket[28:36])[0]
-            delay = timeReceived - timeSentreturn delay
-         
-        else:
-            print "Expected Packet not arrived"
+        icmpHeader = recPacket[20:28]
+        rawTTL = struct.unpack("s", bytes([recPacket[8]]))[0] 
+        
+        # binascii -- Convert between binary and ASCII
+        TTL = int(binascii.hexlify(rawTTL), 16)
+        
+        icmpType, code, checksum, packetID, sequence = struct.unpack("bbHHh", icmpHeader)
+        
+        if packetID == ID:                                                  
+            byte = struct.calcsize("d")                                     
+            timeSent = struct.unpack("d", recPacket[28:28 + byte])[0]       
+            return "Reply from %s: bytes=%d time=%f5ms TTL=%d" % (          
+            destAddr, len(recPacket), (timeReceived - timeSent) * 1000, TTL)
 
         # Fill in end
         timeLeft = timeLeft - howLongInSelect
