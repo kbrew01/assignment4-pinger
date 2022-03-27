@@ -8,7 +8,13 @@ import binascii
 from statistics import stdev
 
 # Should use stdev
-
+packet_min = 0
+packet_avg = 0
+packet_max = 0
+stdev_var = 0
+timeRTT = []
+packageRev = 0
+packageSent = 0
 
 ICMP_ECHO_REQUEST = 8
 
