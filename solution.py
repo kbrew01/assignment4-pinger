@@ -7,6 +7,9 @@ import select
 import binascii
 import statistics
 
+
+ICMP_ECHO_REQUEST = 8
+
 # Should use stdev
 packet_min = 0
 packet_avg = 0
@@ -16,7 +19,6 @@ timeRTT = []
 packageRev = 0
 packageSent = 0
 
-ICMP_ECHO_REQUEST = 8
 
 
 def checksum(string):
