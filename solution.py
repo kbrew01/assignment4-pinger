@@ -5,7 +5,7 @@ import struct
 import time
 import select
 import binascii
-from statistics import stdev
+import statistics
 
 # Should use stdev
 packet_min = 0
