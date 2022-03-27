@@ -50,7 +50,8 @@ def receiveOnePing(mySocket, ID, timeout, destAddr):
 
         # Fill in start
         # Fetch the ICMP header from the IP packet
-        icmpMessage = recPacket[20:28]type,code, checksum, identifier, sequence = struct.unpack('bbHHh', icmpMessage)
+        icmpMessage = recPacket[20:28]
+        type,code, checksum, identifier, sequence = struct.unpack('bbHHh', icmpMessage)
         if ID == identifier:
             #originate timestamp is located 28-36 bytes of echo reply message.
             timeSent = struct.unpack('d', recPacket[28:36])[0]
