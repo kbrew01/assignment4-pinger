@@ -8,6 +8,14 @@ import binascii
 from statistics import stdev
 # Should use stdev
 
+packet_min = 0
+packet_avg = 0
+packet_max = 0
+stdev_var = 0
+timeRTT = []
+packageRev = 0
+packageSent = 0
+
 ICMP_ECHO_REQUEST = 8
 
 
@@ -129,7 +137,7 @@ def ping(host, timeout=1):
         time.sleep(1)  # one second
         
     #You should have the values of delay for each ping here; fill in calculation for packet_min, packet_avg, packet_max, and stdev
-    #vars = [str(round(packet_min, 8)), str(round(packet_avg, 8)), str(round(packet_max, 8)),str(round(stdev(stdev_var), 8))]
+    vars = [str(round(packet_min, 8)), str(round(packet_avg, 8)), str(round(packet_max, 8)),str(round(stdev(stdev_var), 8))]
 
     return vars
 
